@@ -1,0 +1,277 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[skip=5pt plus1pt, indent=15pt]{parskip}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{geometry}
+\usepackage{appendix}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[export]{adjustbox}[2011/08/13]
+\usepackage{url}
+\usepackage{float}
+\usepackage{indentfirst}
+\usepackage{caption}
+\usepackage{subcaption}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+\usepackage{graphicx}
+
+
+\title{P-stance Analysis}
+\author{ Drobnitchi Daniel, Suto Robert-Lucian \\411}
+\date{January 2023}
+
+\begin{document}
+
+\maketitle
+\begin{large}
+
+\section{Introduction}
+Political stance is the application of Natural Language Processing techniques to analyze and categorize text data based on political ideologies or beliefs. It involves using algorithms to identify patterns and features in text data that can predict the author's political beliefs or views on political issues. This can be used to categorize text data into political groups such as left-leaning, right-leaning, or neutral. These techniques are used in various fields such as politics, marketing, and social media analysis.
+
+\section{Dataset}
+
+For this example, we've decided to use the P-Stance dataset of the 2020 Presidential Election in USA. The dataset is organized based on the candidates : Donald Trump, Bernie Sanders, Joe Biden. Each president has it's own training and testing dataset, each containing ~6500 and ~800 tweets each. Each row of the dataset contains 3 columns: 
+\begin{itemize}
+    \item Tweet : A tweet concerning a user's view on the certain candidate.
+    \item Target : The target, being one of the candidates.
+    \item Stance : Represented by the tweet's opinion: Either in Favor or Against the certain candidate.
+\end{itemize}
+\newpage
+
+The scope of the model in this case is to conclude if a tweet is either in favor or against, no matter the candidate it is used tweeted at and without using that as a feature. This adds complexity to the way features are separated in the training part of the project, as it lacks crucial information in which it can build on.
+
+Examples for the dataset:
+
+\begin{enumerate}
+    \item Against - Donald Trump: Tell us something we didnt know. Bribery Corruption Obstruction. Thats his MO. \#Trump
+    \item Pro - Donald Trump: Attorney General Bill Barr is a rotten piece of .\#MuellerReport \#BillBarr \#Trump
+    \item Against - Joe Biden : \#Biden can not command respect in this little room much less our nation.
+    \item Pro - Joe Biden : Joe gives us solutions. Joe gives us a clear path forward while we navigate this global crisis. The next Commander-In-Chief, everyone \#Twill
+    \item Against - Bernie Sanders : Well, a sad day for all my communist friends. I guess they are gonna have to move to Cuba or wait another 4-8 years \#BernieSanders Feel the burn!!!
+    \item Pro - Bernie Sanders I can legally change my address to MI and just did so I can volunteer & vote for \#BernieSanders in MI.
+\end{enumerate}
+
+It is important to take into account the relative bias a social media app has towards some of the candidates, as, for example, there were more tweets against Donald Trump compared to Bernie Sanders or Joe Biden. Either way, the following figures will explain this better.
+
+\section{Exploratory data analysis}
+
+We attached some graphs and figures to accentuate the way the dataset is split. 
+
+\begin{figure}
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/Candidate.png}
+    \caption{Candidates}
+    \label{fig:sub1}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/Favor.png}
+    \caption{Stances}
+    \label{fig:sub2}
+  \end{subfigure}
+  \caption{Graphs for distribution of data}
+  \label{fig:test}
+\end{figure}
+
+Adding on top of this, we used some wordclouds for the pre-processed occurences of words.
+
+
+\begin{figure}
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/biden.png}
+    \caption{Biden}
+    \label{fig:sub1}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/Trump.png}
+    \caption{Trump}
+    \label{fig:sub2}
+  \end{subfigure}\\\phantom{aaaaaaaaaaaaaaaaa}
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/Bernie.png}
+    \caption{Bernie}
+    \label{fig:sub2}
+  \end{subfigure}
+  \caption{Graphs for distribution of data}
+  \label{fig:test}
+\end{figure}
+
+
+
+
+
+
+\section{Processing the data}
+
+For the preprocess function we have used the following procedures:
+
+\begin{enumerate}
+    \item Lowered all the characters.
+    \item Split the tweets into separate words.
+    \item Removed mentions from the words.
+    \item Stemmed each word using SnowBallStemer.
+    \item Unidecoded the text.
+    \item Removed alphanumerical characters.
+    \item Removed whitespaces.
+\end{enumerate}
+
+To gather up the processing data, we have used Term Frequency - Inverse Document Frequency vectorizer.
+
+
+
+\section{Training the models.}
+
+We have used five different models on this dataset, along with some hyperparameter tuning using gridsearch: 
+
+\begin{itemize}
+    \item Support Vector Machine
+    \item Logistic Regression
+    \item Knn Neighbors
+    \item Multinomial Naive Bayes
+    \item Decision Tree Classifier
+\end{itemize}
+
+\subsection{Support Vector Machine}
+
+Support Vector Machine (SVM) is a type of supervised machine learning algorithm used for classification and regression analysis. It finds the hyperplane in high dimensional space that best separates the data into classes and tries to maximize the margin between the two classes.
+
+
+\begin{center}
+\begin{tabular}{ |l|l|l|l| } 
+ \hline
+  Kernel & C & Gamma & Training Accuracy \\ 
+ \hline
+  linear & 1  & 0.001 & 0.575\\ 
+ \hline
+ linear & 2  & 0.001 & 0.569\\ 
+ \hline
+ linear & 3 & 0.001 & 0.566\\ 
+ \hline
+ linear & 1  & 0.01 & 0.553\\ 
+ \hline
+ linear & 2 & 0.01 & 0.532\\ 
+ \hline
+ linear & 3 & 0.01 & 0.527\\ 
+ \hline
+
+\end{tabular}
+\end{center}
+
+In the end, the training accuracy was far worse than the test one. The chosen final fit was using C=1, Gamma = 0.001 and Linear Kernel. It achieved an accuracy of 55.9\% on the training dataset and 69\% on the test one.
+
+\subsection{Logistic Regression}
+
+Logistic Regression is a statistical method used for binary classification problems in NLP. It estimates the probability of an event occurring based on the input features, and outputs a binary decision (e.g. positive/negative sentiment). Logistic Regression can be trained using annotated text data and make predictions on new unseen text data.
+
+Here is the result on the grid search algorithm.
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+C & Solver & Score & Time \\ \hline
+1 & lbfgs & 0.590 & 1.3s \\ \hline
+1 & newton-cg & 0.590 & 0.4s \\ \hline
+1 & saga & 0.590 & 0.3s \\ \hline
+2 & lbfgs & 0.592 & 1.8s \\ \hline
+2 & newton-cg & 0.592 & 0.3s \\ \hline
+2 & saga & 0.592 & 0.2s \\ \hline
+3 & lbfgs & 0.587 & 1.0s \\ \hline
+3 & newton-cg & 0.587 & 0.3s \\ \hline
+3 & saga & 0.588 & 0.2s \\ \hline
+\end{tabular}
+\end{center}
+
+In the end, the final accuracy on the training  was 59\% and the final accuracy on the test one was 68.7\%.  With C=1, and the solver being newton-cg.
+
+\subsection{Knn Neighbors}
+
+KNN (K-Nearest Neighbors) is a non-parametric and lazy learning algorithm used for classification and regression tasks. It's based on the idea of assigning a class label to a new data point by finding its K nearest neighbors in a training dataset and taking a majority vote among them.
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+Algorithm & Leaf Size & $k$-Neighbors & Score \\ \hline
+Auto & 1 & 5 & 0.561 \\
+\hline
+Auto & 1 & 10 & 0.567 \\
+\hline
+Auto & 1 & 20 & 0.578 \\
+\hline
+Auto & 1 & 50 & 0.583 \\
+\hline
+Auto & 2 & 5 & 0.561 \\
+\hline
+Auto & 2 & 10 & 0.567 \\
+\hline
+Auto & 2 & 20 & 0.571 \\
+\hline
+Auto & 2 & 50 & 0.587 \\
+\hline
+\end{tabular}
+\end{center}
+
+In the end, the final accuracy on the training  was 58.3\% and the final accuracy on the test one was 68.7\%. leaf size = 1, and k-neighbors being 20.
+
+
+\subsection{Decision Tree}
+A decision tree classifier is an algorithm used for classification tasks that splits data into smaller subsets based on the most significant features or attributes, creating a tree-like structure. Each internal node in the tree represents a test on an attribute, each branch represents the outcome of the test, and each leaf node assigns a class label to a data sample.\\
+Bellow are some of the results, randomly selected from a gridsearch.
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+Criterion & Max Depth & Min Samples Split & Score \\ \hline
+gini & None & 2 & 0.534 \\ \hline
+gini & None & 2 & 0.627 \\ \hline
+gini & None & 2 & 0.584 \\ \hline
+gini & None & 5 & 0.537 \\ \hline
+gini & None & 5 & 0.581 \\ \hline
+
+gini & 5 & 2 & 0.557 \\ \hline
+gini & 5 & 5 & 0.504 \\ \hline
+gini & 5 & 5 & 0.531 \\ \hline
+gini & 5 & 5 & 0.557 \\ \hline
+gini & 5 & 5 & 0.560 \\ \hline
+\end{tabular}
+\end{table}
+In the end, the final accuracy on the training was 57.9\% and the final accuracy
+on the test one was 61.7\%. criterion =  entropy, max\_depth = None and min\_samples\_split being 5.
+\subsection{Multinomial NB}
+Multinomial Naive Bayes (NB) is a simple and fast algorithm for text classification problems that assumes independence between features. It is a popular choice for text classification as it can handle discrete data such as word counts, and it is also scalable to large datasets. It estimates the probability of each class by counting the frequency of words in each class, and then classifies a new document based on the maximum probability.\\
+For this algorithm we obtained an accuracy of 68.7\%.
+
+\section{Conclusion}
+In conclusion, the results of the experiment showed that the best algorithm for predicting tweet sentiment towards political candidates was Support Vector Machines (SVM), with an accuracy of 69\% on test data. The evaluation metrics indicate that the algorithms have a tendency to predict tweets as being against a candidate, rather than in favor of them, as evidenced by the high precision and low recall for the "FAVOR" class. To address this imbalance, it may be beneficial to increase the weight given to the "FAVOR" class in future iterations.
+\begin{figure}[H]
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/valdataconfmatrix.png}
+    \caption{Validation data}
+    \label{fig:sub1}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{figures/testdataconfmatrix.png}
+    \caption{Test data}
+    \label{fig:sub2}
+  \end{subfigure}\
+  \caption{Confusion Matrices}
+
+\end{figure}
+
+\end{large}
+\end{document}
